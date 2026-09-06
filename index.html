@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
+
+    <title>FocusFlow</title>
+
+    <!-- ================================================= -->
+    <!-- TELEGRAM MINI APP SDK -->
+    <!-- ================================================= -->
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- ================================================= -->
+    <!-- STYLES -->
+    <!-- ================================================= -->
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <header class="header">
+
+        <div>
+            <h1>FocusFlow</h1>
+
+            <p data-i18n="subtitle">
+                Твой личный трекер продуктивности
+            </p>
+        </div>
+
+        <button
+            class="icon-btn"
+            id="settingsBtn"
+            aria-label="Настройки"
+        >
+            ⚙️
+        </button>
+
+    </header>
+
+
+    <!-- ================================================= -->
+    <!-- NOTES PAGE -->
+    <!-- ================================================= -->
+
+    <main
+        id="notesPage"
+        class="page active"
+    >
+
+        <div class="page-title-row">
+
+            <div>
+                <h2 data-i18n="notes">
+                    Заметки
+                </h2>
+
+                <p data-i18n="notesDesc">
+                    Сохраняй важные мысли и идеи
+                </p>
+            </div>
+
+            <button
+                class="primary-btn"
+                id="addNoteBtn"
+            >
+                +
+                <span data-i18n="add">
+                    Добавить
+                </span>
+            </button>
+
+        </div>
+
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="searchInput"
+                data-placeholder="search"
+                placeholder="Поиск заметок..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div id="notesList"></div>
+
+
+        <div
+            id="emptyNotes"
+            class="empty-state"
+        >
+
+            <div class="empty-icon">
+                📝
+            </div>
+
+            <h3 data-i18n="noNotes">
+                Пока нет заметок
+            </h3>
+
+            <p data-i18n="createFirstNote">
+                Создай свою первую заметку
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================================================= -->
+    <!-- ACTIVITY PAGE -->
+    <!-- ================================================= -->
+
+    <main
+        id="activityPage"
+        class="page"
+    >
+
+        <div class="page-title-row">
+
+            <div>
+
+                <h2 data-i18n="activity">
+                    Активность
+                </h2>
+
+                <p data-i18n="activityDesc">
+                    Твои занятия по дням
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CALENDAR -->
+
+        <section class="card calendar-card">
+
+            <div class="calendar-header">
+
+                <button
+                    class="icon-btn small"
+                    id="prevMonth"
+                    aria-label="Предыдущий месяц"
+                >
+                    ‹
+                </button>
+
+                <h3 id="calendarTitle"></h3>
+
+                <button
+                    class="icon-btn small"
+                    id="nextMonth"
+                    aria-label="Следующий месяц"
+                >
+                    ›
+                </button>
+
+            </div>
+
+
+            <div class="weekdays">
+
+                <span>Пн</span>
+                <span>Вт</span>
+                <span>Ср</span>
+                <span>Чт</span>
+                <span>Пт</span>
+                <span>Сб</span>
+                <span>Вс</span>
+
+            </div>
+
+
+            <div
+                id="calendarGrid"
+                class="calendar-grid"
+            ></div>
+
+
+            <div class="calendar-legend">
+
+                <span>
+                    <i class="legend-box empty"></i>
+
+                    <span data-i18n="noActivity">
+                        Нет активности
+                    </span>
+                </span>
+
+
+                <span>
+                    <i class="legend-box active-blue"></i>
+
+                    <span data-i18n="someActivity">
+                        Есть активность
+                    </span>
+                </span>
+
+
+                <span>
+                    <i class="legend-box active-green"></i>
+
+                    <span data-i18n="goodActivity">
+                        Много активности
+                    </span>
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- DAY STATISTICS -->
+
+        <section class="card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3 id="selectedDateTitle">
+                        Сегодня
+                    </h3>
+
+                    <p data-i18n="dayStats">
+                        Статистика дня
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="dayStats"></div>
+
+        </section>
+
+
+        <!-- TASKS -->
+
+        <section class="card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3 data-i18n="tasks">
+                        Задачи
+                    </h3>
+
+                    <p data-i18n="tasksDesc">
+                        Отмечай то, что сделал
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="small-primary-btn"
+                    id="addTaskBtn"
+                >
+
+                    +
+
+                    <span data-i18n="add">
+                        Добавить
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div id="tasksList"></div>
+
+
+            <div
+                id="emptyTasks"
+                class="empty-small"
+            >
+
+                <span data-i18n="noTasks">
+                    Задач пока нет
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================================================= -->
+    <!-- PROGRESS PAGE -->
+    <!-- ================================================= -->
+
+    <main
+        id="progressPage"
+        class="page"
+    >
+
+        <div class="page-title-row">
+
+            <div>
+
+                <h2 data-i18n="progress">
+                    Прогресс
+                </h2>
+
+                <p data-i18n="progressDesc">
+                    Следи за своим временем
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TODAY PROGRESS -->
+
+        <section class="card today-progress">
+
+            <h3 data-i18n="today">
+                Сегодня
+            </h3>
+
+
+            <div class="progress-circle">
+
+                <div class="progress-circle-inner">
+
+                    <strong id="dailyProgressPercent">
+                        0%
+                    </strong>
+
+                    <span data-i18n="completed">
+                        выполнено
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <p
+                id="dailyProgressText"
+                class="center-text"
+            >
+                0 мин
+            </p>
+
+        </section>
+
+
+        <!-- TIMER -->
+
+        <section class="card timer-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3 data-i18n="timer">
+                        Таймер
+                    </h3>
+
+                    <p data-i18n="timerDesc">
+                        Запиши своё занятие
+                    </p>
+
+                </div>
+
+
+                <span
+                    id="timerStatus"
+                    class="timer-status"
+                >
+                    READY
+                </span>
+
+            </div>
+
+
+            <div class="activity-selector">
+
+                <div class="selector-title">
+
+                    <span data-i18n="chooseActivity">
+                        Выбери занятие
+                    </span>
+
+
+                    <button
+                        class="text-btn"
+                        id="manageCategoriesBtn"
+                    >
+
+                        ⚙️
+
+                        <span data-i18n="manage">
+                            Управлять
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="timerCategories"
+                    class="category-list"
+                ></div>
+
+
+                <button
+                    class="add-category-btn"
+                    id="addCategoryBtn"
+                >
+
+                    +
+
+                    <span data-i18n="newActivity">
+                        Новое занятие
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="timer-display"
+                id="timerDisplay"
+            >
+                00:00:00
+            </div>
+
+
+            <button
+                class="timer-start-btn"
+                id="timerStartBtn"
+            >
+
+                ▶
+
+                <span data-i18n="start">
+                    Начать
+                </span>
+
+            </button>
+
+
+            <button
+                class="timer-stop-btn hidden"
+                id="timerStopBtn"
+            >
+
+                ■
+
+                <span data-i18n="stop">
+                    Стоп
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <section class="card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3 data-i18n="statistics">
+                        Статистика
+                    </h3>
+
+                    <p data-i18n="statisticsDesc">
+                        Сколько времени ты потратил
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="statisticsList"></div>
+
+        </section>
+
+
+        <!-- WEEK -->
+
+        <section class="card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h3 data-i18n="week">
+                        Неделя
+                    </h3>
+
+                    <p data-i18n="weekDesc">
+                        Активность за последние 7 дней
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="weeklyChart"
+                class="weekly-chart"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================================================= -->
+    <!-- BOTTOM NAVIGATION -->
+    <!-- ================================================= -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-btn active"
+            data-page="notesPage"
+        >
+
+            <span>📝</span>
+
+            <small data-i18n="notes">
+                Заметки
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-btn"
+            data-page="activityPage"
+        >
+
+            <span>📅</span>
+
+            <small data-i18n="activity">
+                Активность
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-btn"
+            data-page="progressPage"
+        >
+
+            <span>📊</span>
+
+            <small data-i18n="progress">
+                Прогресс
+            </small>
+
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- NOTE MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="noteModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 id="noteModalTitle">
+                Новая заметка
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="noteModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <input
+            id="noteTitle"
+            type="text"
+            placeholder="Название"
+            autocomplete="off"
+        >
+
+
+        <textarea
+            id="noteText"
+            placeholder="Текст заметки..."
+        ></textarea>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                data-close="noteModal"
+                data-i18n="cancel"
+            >
+                Отмена
+            </button>
+
+
+            <button
+                class="primary-btn"
+                id="saveNoteBtn"
+                data-i18n="save"
+            >
+                Сохранить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- CATEGORY MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="categoryModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="newActivity">
+                Новое занятие
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="categoryModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <label data-i18n="activityName">
+            Название занятия
+        </label>
+
+
+        <input
+            id="categoryName"
+            type="text"
+            placeholder="Например: Программирование"
+            autocomplete="off"
+        >
+
+
+        <label data-i18n="activityIcon">
+            Иконка
+        </label>
+
+
+        <input
+            id="categoryIcon"
+            type="text"
+            value="📌"
+            maxlength="2"
+        >
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                data-close="categoryModal"
+                data-i18n="cancel"
+            >
+                Отмена
+            </button>
+
+
+            <button
+                class="primary-btn"
+                id="saveCategoryBtn"
+                data-i18n="save"
+            >
+                Сохранить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MANAGE CATEGORIES MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="manageCategoryModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="manageActivities">
+                Мои занятия
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="manageCategoryModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="manageCategoriesList"></div>
+
+
+        <button
+            class="add-category-btn"
+            id="manageAddCategoryBtn"
+        >
+
+            +
+
+            <span data-i18n="newActivity">
+                Новое занятие
+            </span>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- SAVE SESSION MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="saveSessionModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="saveSession">
+                Сохранить занятие?
+            </h3>
+
+        </div>
+
+
+        <div class="session-result">
+
+            <div id="sessionIcon">
+                💻
+            </div>
+
+
+            <strong id="sessionCategory">
+                Программирование
+            </strong>
+
+
+            <span id="sessionTime">
+                1 ч 20 мин
+            </span>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                id="cancelSessionBtn"
+                data-i18n="cancel"
+            >
+                Отменить
+            </button>
+
+
+            <button
+                class="primary-btn"
+                id="saveSessionBtn"
+                data-i18n="save"
+            >
+                Сохранить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- TASK MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="taskModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="newTask">
+                Новая задача
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="taskModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <input
+            id="taskInput"
+            type="text"
+            placeholder="Например: решить 5 задач по Python"
+            autocomplete="off"
+        >
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                data-close="taskModal"
+                data-i18n="cancel"
+            >
+                Отмена
+            </button>
+
+
+            <button
+                class="primary-btn"
+                id="saveTaskBtn"
+                data-i18n="add"
+            >
+                Добавить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- SETTINGS MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="settingsModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="settings">
+                Настройки
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="settingsModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- LANGUAGE -->
+
+        <div class="settings-section">
+
+            <h4 data-i18n="language">
+                Язык
+            </h4>
+
+
+            <div class="settings-buttons">
+
+                <button
+                    class="setting-choice"
+                    data-language="ru"
+                >
+                    🇷🇺 Русский
+                </button>
+
+
+                <button
+                    class="setting-choice"
+                    data-language="en"
+                >
+                    🇬🇧 English
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- THEME -->
+
+        <div class="settings-section">
+
+            <h4 data-i18n="theme">
+                Тема
+            </h4>
+
+
+            <div class="settings-buttons">
+
+                <button
+                    class="setting-choice"
+                    id="darkThemeBtn"
+                >
+
+                    🌙
+
+                    <span data-i18n="dark">
+                        Тёмная
+                    </span>
+
+                </button>
+
+
+                <button
+                    class="setting-choice"
+                    id="lightThemeBtn"
+                >
+
+                    ☀️
+
+                    <span data-i18n="light">
+                        Светлая
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- DANGER ZONE -->
+
+        <div class="settings-section danger-zone">
+
+            <h4 data-i18n="danger">
+                Опасная зона
+            </h4>
+
+
+            <button
+                class="danger-btn"
+                id="resetDataBtn"
+                data-i18n="reset"
+            >
+                Сбросить все данные
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MAIN JAVASCRIPT -->
+<!-- ================================================= -->
+
+<script src="script.js"></script>
+
+</body>
+</html>
