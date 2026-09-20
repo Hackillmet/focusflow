@@ -290,7 +290,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             selectCategory:
-                "Сначала выбери занятие"
+                "Сначала выбери занятие",
+
+
+            addTime:
+                "Добавить время",
+
+            hours:
+                "Часы",
+
+            minutesInput:
+                "Минуты",
+
+            enterTime:
+                "Введи время больше 0"
 
         },
 
@@ -485,7 +498,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             selectCategory:
-                "First choose an activity"
+                "First choose an activity",
+
+
+            addTime:
+                "Add time",
+
+            hours:
+                "Hours",
+
+            minutesInput:
+                "Minutes",
+
+            enterTime:
+                "Enter a time greater than 0"
 
         }
 
@@ -668,6 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderDayStats();
         renderTasks();
         renderCategories();
+        renderManualTimeCategories();
         renderStatistics();
         renderWeeklyChart();
         updateProgress();
@@ -751,6 +778,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ) {
 
                         renderCategories();
+                        renderManualTimeCategories();
                         renderStatistics();
                         renderWeeklyChart();
                         updateProgress();
@@ -1249,6 +1277,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                     renderCategories();
+
+                }
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        });
+
+    }
+
+
+    /* =====================================================
+       MANUAL TIME CATEGORIES
+    ===================================================== */
+
+    let manualSelectedCategoryId =
+        selectedCategoryId;
+
+
+    function renderManualTimeCategories() {
+
+        const container =
+            document.getElementById(
+                "manualTimeCategories"
+            );
+
+        if (!container) return;
+
+
+        container.innerHTML = "";
+
+
+        if (categories.length === 0) {
+
+            container.innerHTML = `
+                <div class="empty-small">
+                    ${t("noCategories")}
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        categories.forEach(category => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.className =
+                "category-btn";
+
+
+            if (
+                category.id ===
+                manualSelectedCategoryId
+            ) {
+
+                button.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            button.innerHTML =
+                `${escapeHTML(
+                    category.icon
+                )} ${escapeHTML(
+                    category.name
+                )}`;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    manualSelectedCategoryId =
+                        category.id;
+
+
+                    renderManualTimeCategories();
 
                 }
             );
@@ -2022,6 +2139,140 @@ document.addEventListener("DOMContentLoaded", () => {
                 closeModal(
                     "saveSessionModal"
                 );
+
+            }
+        );
+
+
+    /* =====================================================
+       ADD MANUAL TIME
+    ===================================================== */
+
+    document
+        .getElementById(
+            "manualTimeBtn"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                manualSelectedCategoryId =
+                    selectedCategoryId;
+
+
+                document.getElementById(
+                    "manualHours"
+                ).value = 0;
+
+
+                document.getElementById(
+                    "manualMinutes"
+                ).value = 30;
+
+
+                renderManualTimeCategories();
+
+
+                openModal(
+                    "manualTimeModal"
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "saveManualTimeBtn"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                if (!manualSelectedCategoryId) {
+
+                    alert(
+                        t("selectCategory")
+                    );
+
+                    return;
+
+                }
+
+
+                const hours =
+                    Number(
+                        document.getElementById(
+                            "manualHours"
+                        ).value
+                    ) || 0;
+
+
+                const minutes =
+                    Number(
+                        document.getElementById(
+                            "manualMinutes"
+                        ).value
+                    ) || 0;
+
+
+                const totalSeconds =
+                    (hours * 3600) +
+                    (minutes * 60);
+
+
+                if (totalSeconds <= 0) {
+
+                    alert(
+                        t("enterTime")
+                    );
+
+                    return;
+
+                }
+
+
+                sessions.push({
+
+                    id:
+                        `manual-${Date.now()}`,
+
+                    categoryId:
+                        manualSelectedCategoryId,
+
+                    seconds:
+                        totalSeconds,
+
+                    date:
+                        getDateKey(
+                            new Date()
+                        ),
+
+                    createdAt:
+                        Date.now(),
+
+                    manual:
+                        true
+
+                });
+
+
+                saveJSON(
+                    "focusflowSessions",
+                    sessions
+                );
+
+
+                closeModal(
+                    "manualTimeModal"
+                );
+
+
+                renderCalendar();
+                renderDayStats();
+                renderStatistics();
+                renderWeeklyChart();
+                updateProgress();
 
             }
         );
@@ -3187,6 +3438,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 renderTasks();
 
+                renderCategories();
+
+                renderManualTimeCategories();
+
                 renderStatistics();
 
                 renderWeeklyChart();
@@ -3362,6 +3617,8 @@ document.addEventListener("DOMContentLoaded", () => {
     renderNotes();
 
     renderCategories();
+
+    renderManualTimeCategories();
 
     renderCalendar();
 
