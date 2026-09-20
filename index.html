@@ -489,6 +489,22 @@
 
             </button>
 
+
+            <!-- MANUAL TIME -->
+
+            <button
+                class="add-category-btn manual-time-btn"
+                id="manualTimeBtn"
+            >
+
+                ➕
+
+                <span data-i18n="addTime">
+                    Добавить время
+                </span>
+
+            </button>
+
         </section>
 
 
@@ -916,6 +932,99 @@
                 data-i18n="add"
             >
                 Добавить
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MANUAL TIME MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="manualTimeModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3 data-i18n="addTime">
+                Добавить время
+            </h3>
+
+
+            <button
+                class="close-btn"
+                data-close="manualTimeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <label data-i18n="chooseActivity">
+            Выбери занятие
+        </label>
+
+
+        <div
+            id="manualTimeCategories"
+            class="category-list"
+        ></div>
+
+
+        <label data-i18n="hours">
+            Часы
+        </label>
+
+
+        <input
+            id="manualHours"
+            type="number"
+            min="0"
+            max="23"
+            value="0"
+        >
+
+
+        <label data-i18n="minutesInput">
+            Минуты
+        </label>
+
+
+        <input
+            id="manualMinutes"
+            type="number"
+            min="0"
+            max="59"
+            value="30"
+        >
+
+
+        <div class="modal-actions">
+
+            <button
+                class="secondary-btn"
+                data-close="manualTimeModal"
+                data-i18n="cancel"
+            >
+                Отмена
+            </button>
+
+
+            <button
+                class="primary-btn"
+                id="saveManualTimeBtn"
+                data-i18n="save"
+            >
+                Сохранить
             </button>
 
         </div>
